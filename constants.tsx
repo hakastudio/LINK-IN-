@@ -26,9 +26,9 @@ export const MOCK_DATA: BioData = {
   ],
   links: [
     { id: 'l1', title: 'INSTAGRAM', url: 'https://www.instagram.com/heriikurniawann', isPriority: true },
-    { id: 'l2', title: 'LIHAT PORTOFOLIO', url: '#' },
-    { id: 'l3', title: 'WEBSITE', url: 'https://www.teknocuan.web.id/' },
-    { id: 'l4', title: 'EMAIL KAMI', url: 'https://bit.ly/4qx42z2' },
+    { id: 'l2', title: 'DEMO APP KASIR', url: 'https://kasirku.hakastudio.online/' },
+    { id: 'l3', title: 'DEMO APP TIKET EVENT', url: 'http://eventkuy.hakastudio.online/' },
+    { id: 'l4', title: 'KERJASAMA', url: 'https://bit.ly/4qx42z2' },
   ],
   featured: [
     {
