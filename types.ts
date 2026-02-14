@@ -13,14 +13,15 @@ export interface ActionLink {
   isPriority?: boolean;
 }
 
+// Add FeaturedCard interface to fix the import error in FeaturedSlider.tsx
 export interface FeaturedCard {
   id: string;
-  tag: string;
   title: string;
   description: string;
   image: string;
-  ctaText: string;
+  tag: string;
   url: string;
+  ctaText: string;
 }
 
 export interface BioData {
@@ -30,5 +31,5 @@ export interface BioData {
   profilePic: string;
   socials: SocialLink[];
   links: ActionLink[];
-  featured: FeaturedCard[];
+  featured?: FeaturedCard[];
 }

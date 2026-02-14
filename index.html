@@ -55,6 +55,10 @@
             0%, 100% { transform: translateY(0) scale(1); }
             50% { transform: translateY(-20px) scale(1.05); }
         }
+        @keyframes subtle-float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(3deg); }
+        }
         @keyframes shine {
             0% { transform: translateX(-150%) skewX(-20deg); }
             100% { transform: translateX(250%) skewX(-20deg); }
@@ -93,6 +97,9 @@
         }
         .animate-float-slow {
             animation: float-slow 10s ease-in-out infinite;
+        }
+        .animate-subtle-float {
+            animation: subtle-float 4s ease-in-out infinite;
         }
         .animate-shine {
             animation: shine 1.2s ease-in-out infinite;
