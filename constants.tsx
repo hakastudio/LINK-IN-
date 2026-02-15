@@ -23,7 +23,7 @@ export const MOCK_DATA: BioData = {
   links: [
     { id: 'l1', title: 'SAWERIA', url: 'https://saweria.co/heriikurniawann', isPriority: true },
     { id: 'l2', title: 'DEMO APP KASIR', url: 'https://kasirku.hakastudio.online/' },
-    { id: 'l3', title: 'DEMO APP TIKET EVENT', url: 'http://eventkuy.hakastudio.online/' },
+    { id: 'l3', title: 'DEMO APP TIKET EVENT', url: 'https://www.eventkuy.web.id/' },
     { id: 'l4', title: 'APLIKASI INVOICE', url: 'https://flowkas.hakastudio.online/' },
     { id: 'l5', title: 'KERJASAMA', url: 'https://bit.ly/4qx42z2' },
   ],
