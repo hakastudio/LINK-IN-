@@ -13,19 +13,23 @@ const App: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [bioData, setBioData] = useState<BioData>(MOCK_DATA);
 
-  // Load data from localStorage on mount
+  // Load data and Preload critical images
   useEffect(() => {
     const savedData = localStorage.getItem('bio_experience_data');
-    if (savedData) {
-      try {
-        setBioData(JSON.parse(savedData));
-      } catch (e) {
-        console.error("Failed to parse saved data", e);
-      }
+    const currentData = savedData ? JSON.parse(savedData) : MOCK_DATA;
+    setBioData(currentData);
+
+    // CRITICAL: Preload profile picture immediately
+    const img = new Image();
+    img.src = currentData.profilePic;
+    
+    // Preload first featured image if exists
+    if (currentData.featured && currentData.featured.length > 0) {
+      const featImg = new Image();
+      featImg.src = currentData.featured[0].image;
     }
   }, []);
 
-  // Save data to localStorage whenever bioData changes
   const updateBioData = (newData: BioData) => {
     setBioData(newData);
     localStorage.setItem('bio_experience_data', JSON.stringify(newData));
@@ -50,7 +54,7 @@ const App: React.FC = () => {
         onComplete={() => setShowContent(true)} 
       />
 
-      <main className={`transition-opacity duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+      <main className={`transition-all duration-1000 ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         {/* Background Decorations */}
         <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
           <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-[#0035C1]/15 rounded-full blur-[120px] animate-float-slow"></div>
@@ -70,7 +74,7 @@ const App: React.FC = () => {
           />
           
           {bioData.featured && bioData.featured.length > 0 && (
-            <div className="w-full mt-4 animate-fade-up" style={{ animationDelay: '0.4s' }}>
+            <div className="w-full mt-4 animate-fade-up" style={{ animationDelay: '0.2s' }}>
               <FeaturedSlider 
                 items={bioData.featured} 
                 isEditMode={isEditMode}
@@ -79,7 +83,7 @@ const App: React.FC = () => {
             </div>
           )}
 
-          <div className="w-full mt-2 animate-fade-up" style={{ animationDelay: '0.6s' }}>
+          <div className="w-full mt-2 animate-fade-up" style={{ animationDelay: '0.4s' }}>
             <LinkList links={bioData.links} />
           </div>
 
@@ -91,7 +95,6 @@ const App: React.FC = () => {
           </footer>
         </div>
 
-        {/* Scroll to Top Button */}
         <button
           onClick={scrollToTop}
           className={`

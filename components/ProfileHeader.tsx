@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+
+import React, { useRef, useState } from 'react';
 import { BioData } from '../types';
 
 interface ProfileHeaderProps {
@@ -9,6 +10,7 @@ interface ProfileHeaderProps {
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({ data, isEditMode, onUpdate }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const handleImageClick = () => {
     if (isEditMode) fileInputRef.current?.click();
@@ -20,6 +22,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ data, isEditMode, onUpdat
       const reader = new FileReader();
       reader.onloadend = () => {
         onUpdate?.({ profilePic: reader.result as string });
+        setImageLoaded(true);
       };
       reader.readAsDataURL(file);
     }
@@ -43,11 +46,26 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ data, isEditMode, onUpdat
           <div className={`
             relative w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-xl overflow-hidden z-10 transition-all duration-700
             ${isEditMode ? 'ring-4 ring-[#FF7300] ring-offset-4 scale-105' : 'group-hover:scale-105'}
+            bg-white/40 backdrop-blur-md
           `}>
+            {/* Skeleton / Low-res placeholder bg */}
+            {!imageLoaded && (
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-200 to-slate-300 animate-pulse flex items-center justify-center">
+                 <div className="w-12 h-12 rounded-full border-2 border-slate-400 opacity-20"></div>
+              </div>
+            )}
+            
+            {/* Fixed fetchpriority to fetchPriority to satisfy React/TS types */}
             <img 
               src={data.profilePic} 
               alt={data.name} 
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              onLoad={() => setImageLoaded(true)}
+              fetchPriority="high"
+              className={`
+                w-full h-full object-cover transition-all duration-1000 
+                group-hover:scale-110
+                ${imageLoaded ? 'opacity-100 blur-0 scale-100' : 'opacity-0 blur-lg scale-110'}
+              `}
             />
             
             {isEditMode && (
@@ -64,60 +82,29 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ data, isEditMode, onUpdat
       </div>
 
       <div className="relative z-10 w-full max-w-sm">
-        {isEditMode ? (
-          <input 
-            type="text"
-            className="w-full text-center text-3xl md:text-4xl font-heading font-black tracking-tighter text-[#0035C1] mb-2 lowercase bg-white/40 border-b-2 border-[#0035C1] focus:outline-none"
-            value={data.name}
-            onChange={(e) => onUpdate?.({ name: e.target.value })}
-          />
-        ) : (
-          <h1 className="text-3xl md:text-4xl font-heading font-black tracking-tighter text-[#0035C1] mb-2 lowercase">
-            {data.name.toLowerCase()}
-          </h1>
-        )}
-
-        {isEditMode ? (
-          <input 
-            type="text"
-            className="w-full text-center text-[10px] md:text-xs font-bold tracking-[0.3em] text-[#FF7300] mb-4 uppercase bg-white/40 border-b border-[#FF7300] focus:outline-none"
-            value={data.role}
-            onChange={(e) => onUpdate?.({ role: e.target.value })}
-          />
-        ) : (
-          <p className="text-[10px] md:text-xs font-bold tracking-[0.3em] text-[#FF7300] mb-4 uppercase">
-            {data.role}
-          </p>
-        )}
+        <h1 className="text-3xl md:text-4xl font-heading font-black tracking-tighter text-[#0035C1] mb-2 lowercase">
+          {data.name.toLowerCase()}
+        </h1>
+        <p className="text-[10px] md:text-xs font-bold tracking-[0.3em] text-[#FF7300] mb-4 uppercase">
+          {data.role}
+        </p>
       </div>
       
-      {isEditMode ? (
-        <textarea 
-          className="w-full max-w-md text-center text-sm md:text-base text-[#0035C1] font-bold leading-relaxed mb-8 bg-white/40 border-2 border-dashed border-[#0035C1]/30 p-2 rounded-xl focus:outline-none transition-all duration-300 hover:scale-[1.01] hover:border-[#0035C1]/50 hover:shadow-lg"
-          value={data.bio}
-          rows={3}
-          onChange={(e) => onUpdate?.({ bio: e.target.value })}
-        />
-      ) : (
-        <p className="max-w-md text-sm md:text-base text-[#0035C1] font-bold leading-relaxed mb-8 transition-all duration-500 hover:scale-[1.03] hover:text-[#0035C1]/90 cursor-default drop-shadow-sm hover:drop-shadow-md">
-          {data.bio}
-        </p>
-      )}
+      <p className="max-w-md text-sm md:text-base text-[#0035C1] font-bold leading-relaxed mb-8 transition-all duration-500 hover:scale-[1.03] hover:text-[#0035C1]/90 cursor-default">
+        {data.bio}
+      </p>
 
       <div className="flex gap-6 items-center mb-4 relative z-10">
         {data.socials.map((social, index) => (
           <div 
             key={social.id} 
             className="relative group/tooltip flex flex-col items-center opacity-0 animate-social-entrance"
-            style={{ animationDelay: `${0.8 + index * 0.15}s` }}
+            style={{ animationDelay: `${0.4 + index * 0.1}s` }} // Reduced delay
           >
-            <div className="absolute bottom-full mb-3 px-3 py-1 bg-[#0035C1] text-white text-[10px] font-bold tracking-widest uppercase rounded shadow-lg opacity-0 pointer-events-none group-hover/tooltip:opacity-100 transition-all duration-300 z-10">
-              {social.platform}
-            </div>
             <a 
               href={social.url} 
               className="p-3 bg-white rounded-2xl shadow-sm text-[#0035C1] hover:text-white hover:bg-[#FF7300] transition-all duration-300 border border-[#0035C1]/5 animate-subtle-float"
-              style={{ animationDelay: `${1.5 + index * 0.3}s` }}
+              style={{ animationDelay: `${1 + index * 0.2}s` }}
             >
               <div className="w-5 h-5 flex items-center justify-center transition-transform duration-300 group-hover:rotate-12">
                 {social.platform === 'Instagram' && <svg fill="currentColor" viewBox="0 0 24 24" className="w-full h-full"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>}
