@@ -11,31 +11,19 @@ export const COLORS = {
 
 export const MOCK_DATA: BioData = {
   name: "Heri Kurniawan",
-  role: "Powered by caffeine and creativity",
-  bio: "Believe in yourself and all that you are. Know that there is something inside you that is greater than any obstacle.",
-  profilePic: "https://i.postimg.cc/CLqKRhfp/1000279212-jpg-copy.jpg", 
+  role: "Creative Developer & Tech Enthusiast",
+  bio: "Membangun solusi digital yang fungsional dengan sentuhan estetika retro-modern.",
   socials: [
-    { id: '1', platform: 'TikTok', url: 'https://www.tiktok.com/@heriikurniawann_?is_from_webapp=1&sender_device=pc', icon: 'music' },
+    { id: '1', platform: 'TikTok', url: 'https://www.tiktok.com/@heriikurniawann_', icon: 'music' },
     { id: '2', platform: 'Instagram', url: 'https://www.instagram.com/heriikurniawann', icon: 'instagram' },
     { id: '3', platform: 'Pinterest', url: 'https://id.pinterest.com/heriikurniawann_', icon: 'target' },
     { id: '4', platform: 'Facebook', url: 'https://www.facebook.com/backpakerann', icon: 'facebook' },
   ],
   links: [
-    { id: 'l1', title: 'SAWERIA', url: 'https://saweria.co/heriikurniawann', isPriority: true },
-    { id: 'l2', title: 'DEMO APP KASIR', url: 'https://kasirku.hakastudio.online/' },
-    { id: 'l3', title: 'DEMO APP TIKET EVENT', url: 'https://www.eventkuy.web.id/' },
-    { id: 'l4', title: 'APLIKASI INVOICE', url: 'https://flowkas.hakastudio.online/' },
-    { id: 'l5', title: 'KERJASAMA', url: 'https://bit.ly/4qx42z2' },
-  ],
-  featured: [
-    {
-      id: 'f1',
-      title: 'AI Tools Generator',
-      description: 'Eksplorasi konten dn ide kreatifmu.',
-      image: 'https://i.postimg.cc/ydh8Lvsf/Screenshot_12_02_2026_21_00_19.png',
-      tag: '#',
-      url: 'https://gemini.google.com/share/b4ec20f7b0cb',
-      ctaText: 'Lihat Detail'
-    },
+    { id: 'l1', title: 'DONASI VIA SAWERIA', url: 'https://saweria.co/heriikurniawann', isPriority: true },
+    { id: 'l2', title: 'DEMO KASIR APP', url: 'https://kasirku.hakastudio.online/' },
+    { id: 'l3', title: 'EVENT TICKETING SYSTEM', url: 'https://www.eventkuy.web.id/' },
+    { id: 'l4', title: 'DIGITAL INVOICE APP', url: 'https://flowkas.hakastudio.online/' },
+    { id: 'l5', title: 'HUBUNGI KERJASAMA', url: 'https://bit.ly/4qx42z2' },
   ]
 };

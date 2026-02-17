@@ -3,108 +3,102 @@ import React, { useState, useEffect } from 'react';
 import IntroOverlay from './components/IntroOverlay';
 import ProfileHeader from './components/ProfileHeader';
 import LinkList from './components/LinkList';
-import FeaturedSlider from './components/FeaturedSlider';
 import { MOCK_DATA } from './constants';
 import { BioData } from './types';
 
 const App: React.FC = () => {
   const [showContent, setShowContent] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
   const [bioData, setBioData] = useState<BioData>(MOCK_DATA);
 
-  // Load data and Preload critical images
   useEffect(() => {
-    const savedData = localStorage.getItem('bio_experience_data');
-    const currentData = savedData ? JSON.parse(savedData) : MOCK_DATA;
-    setBioData(currentData);
-
-    // CRITICAL: Preload profile picture immediately
-    const img = new Image();
-    img.src = currentData.profilePic;
-    
-    // Preload first featured image if exists
-    if (currentData.featured && currentData.featured.length > 0) {
-      const featImg = new Image();
-      featImg.src = currentData.featured[0].image;
+    const savedData = localStorage.getItem('bio_experience_data_v2');
+    if (savedData) {
+      try {
+        setBioData(JSON.parse(savedData));
+      } catch (e) {
+        setBioData(MOCK_DATA);
+      }
     }
   }, []);
 
-  const updateBioData = (newData: BioData) => {
-    setBioData(newData);
-    localStorage.setItem('bio_experience_data', JSON.stringify(newData));
-  };
-
   useEffect(() => {
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 400);
+      setShowScrollTop(window.scrollY > 300);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
-    <div className="relative min-h-screen selection:bg-[#0035C1] selection:text-[#FECE00] bg-[#FECE00]">
+    <div className="relative min-h-screen selection:bg-[#0035C1] selection:text-[#FECE00] bg-[#FECE00] overflow-x-hidden">
       <IntroOverlay 
         name={bioData.name} 
         onComplete={() => setShowContent(true)} 
       />
 
-      <main className={`transition-all duration-1000 ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        {/* Background Decorations */}
+      <main className={`transition-all duration-700 ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        {/* Animated Background */}
         <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-          <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-[#0035C1]/15 rounded-full blur-[120px] animate-float-slow"></div>
-          <div className="absolute top-1/2 left-[-10%] w-[350px] h-[350px] bg-[#FF7300]/15 rounded-full blur-[90px] animate-blob animation-delay-2000"></div>
-          <div className="absolute top-1/3 left-0 w-[200%] h-[400px] opacity-[0.08] animate-wave">
-            <svg viewBox="0 0 1000 100" preserveAspectRatio="none" className="w-full h-full fill-[#0035C1]">
-              <path d="M0,50 C150,150 350,0 500,50 C650,100 850,0 1000,50 L1000,100 L0,100 Z"></path>
-            </svg>
+          {/* Subtle Grid */}
+          <div className="absolute inset-0 opacity-[0.05]" 
+               style={{ 
+                 backgroundImage: 'radial-gradient(#0035C1 1.5px, transparent 1.5px)', 
+                 backgroundSize: '32px 32px',
+                 maskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)'
+               }}>
           </div>
+
+          {/* Large Rotating Retro Star */}
+          <div className="absolute top-[-15%] right-[-15%] w-[60vh] h-[60vh] animate-spin-slow opacity-[0.07] text-[#FF7300]">
+             <svg viewBox="0 0 100 100" className="w-full h-full fill-current">
+                <path d="M50 0 L62 38 L100 50 L62 62 L50 100 L38 62 L0 50 L38 38 Z" />
+             </svg>
+          </div>
+
+          {/* Counter-Rotating Dashed Circle */}
+          <div className="absolute bottom-[-10%] left-[-10%] w-[50vh] h-[50vh] animate-spin-slow opacity-[0.05] text-[#0035C1]" style={{ animationDirection: 'reverse', animationDuration: '25s' }}>
+             <svg viewBox="0 0 100 100" className="w-full h-full fill-none stroke-current stroke-[1]">
+                <circle cx="50" cy="50" r="45" strokeDasharray="8 8" />
+                <circle cx="50" cy="50" r="30" strokeDasharray="4 4" opacity="0.5" />
+             </svg>
+          </div>
+
+          {/* Floating Blobs */}
+          <div className="absolute top-[20%] left-[10%] w-[40vw] h-[40vw] bg-[#FF7300]/20 rounded-full blur-[120px] animate-blob mix-blend-multiply"></div>
+          <div className="absolute bottom-[20%] right-[10%] w-[40vw] h-[40vw] bg-[#0035C1]/15 rounded-full blur-[120px] animate-blob animation-delay-2000 mix-blend-multiply"></div>
+          
+          {/* Drift Particles */}
+          <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-[#0035C1] rounded-full opacity-20 animate-float-slow"></div>
+          <div className="absolute bottom-1/3 right-1/3 w-4 h-4 bg-[#FF7300] rounded-full opacity-20 animate-float-bob"></div>
         </div>
 
-        <div className="max-w-screen-md mx-auto min-h-screen flex flex-col items-center">
-          <ProfileHeader 
-            data={bioData} 
-            isEditMode={isEditMode} 
-            onUpdate={(updated) => updateBioData({ ...bioData, ...updated })} 
-          />
-          
-          {bioData.featured && bioData.featured.length > 0 && (
-            <div className="w-full mt-4 animate-fade-up" style={{ animationDelay: '0.2s' }}>
-              <FeaturedSlider 
-                items={bioData.featured} 
-                isEditMode={isEditMode}
-                onUpdate={(updatedFeatured) => updateBioData({ ...bioData, featured: updatedFeatured })}
-              />
-            </div>
-          )}
+        <div className="max-w-screen-md mx-auto min-h-screen flex flex-col items-center relative z-10">
+          <ProfileHeader data={bioData} />
 
-          <div className="w-full mt-2 animate-fade-up" style={{ animationDelay: '0.4s' }}>
+          <div className="w-full">
             <LinkList links={bioData.links} />
           </div>
 
-          <footer className="mt-auto py-12 flex flex-col items-center">
-            <div className="w-12 h-[2px] bg-[#0035C1]/30 mb-6"></div>
-            <p className="text-[10px] tracking-[0.5em] font-black text-[#0035C1]/50 uppercase">
-              Powered by {bioData.name}
+          <footer className="mt-auto py-12 flex flex-col items-center opacity-40 hover:opacity-100 transition-opacity duration-300">
+            <div className="w-8 h-1 bg-[#0035C1] mb-6 rounded-full"></div>
+            <p className="text-[9px] tracking-[0.6em] font-black text-[#0035C1] uppercase">
+              {bioData.name} © {new Date().getFullYear()}
             </p>
           </footer>
         </div>
 
+        {/* Scroll to Top */}
         <button
-          onClick={scrollToTop}
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className={`
-            fixed bottom-8 right-8 z-50 p-4 rounded-2xl bg-[#0035C1] text-white shadow-2xl transition-all duration-500 transform
-            hover:bg-[#FF7300] hover:-translate-y-2 active:scale-95 group
-            ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'}
+            fixed bottom-6 right-6 z-50 w-14 h-14 rounded-2xl bg-[#0035C1] text-[#FECE00] shadow-2xl transition-all duration-500 transform
+            flex items-center justify-center active:scale-90 hover:scale-110 hover:shadow-orange-500/20
+            ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20 pointer-events-none'}
           `}
         >
-          <svg className="w-6 h-6 transition-transform duration-500 group-hover:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3.5" d="M5 15l7-7 7 7"></path>
           </svg>
         </button>
       </main>
